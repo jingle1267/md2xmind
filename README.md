@@ -1,6 +1,6 @@
 # md2xmind
 
-![md2xmind](./md_xmind_preview.png)
+![md2xmind](https://github.com/jingle1267/md2xmind/raw/master/md_xmind_preview.png)
 
 
 markdown转思维导图基于python，实现把markdown格式的文档转换为xmind格式的文档。
