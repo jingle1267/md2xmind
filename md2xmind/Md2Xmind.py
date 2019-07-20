@@ -6,6 +6,7 @@
 @desc：  : 
 """
 import os
+import sys
 
 import xmind
 
@@ -144,4 +145,10 @@ def process(md_file, target_file_name):
 
 
 if __name__ == '__main__':
-	process()
+	print('命令行开始执行')
+	if len(sys.argv) >= 2:
+		md_file = sys.argv[1]
+		target_file_name = sys.argv[2]
+		process(md_file, target_file_name)
+	else:
+		print('Missing parameters！Need source_file and target_file_name.')
