@@ -12,9 +12,9 @@ from md2xmind import Main
 
 def main():
 	print('example main')
-	file_path = os.path.abspath(os.path.join(os.getcwd(), 'test.md'))
+	file_path = os.path.abspath(os.path.join(os.getcwd(), 'test2.md'))
 
-	Main.main(file_path, 'test')
+	Main.main(file_path, 'test2')
 
 
 if __name__ == '__main__':

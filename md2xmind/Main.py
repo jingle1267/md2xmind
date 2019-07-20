@@ -40,42 +40,54 @@ def main(md_file, target_file_name):
 
 def handle_file(md_file, sheet1):
 	f = open(md_file, 'r')
+
+	topic_name = get_file_name(md_file)
+	print(md_file)
+
+	global root_topic
+	global level2_topic
+	global level3_topic
+	global level4_topic
+	global level5_topic
+
+	root_topic = sheet1.getRootTopic()
+	root_topic.setTitle(topic_name)
+	level2_topic = None
+	level3_topic = None
+	level4_topic = None
+	level5_topic = None
+
 	line = f.readline()
 	i = 1
 	while line:
 		line = line.strip()
 		# print(line)
 
-		# super_topic = sheet1.getRootTopic()
-
 		if line.startswith('#'):
-			level = 0
-			topic = ''
 			if line.startswith('# '):
-				level = 1
-				topic = line.replace('# ', '')
-				level1_topic = sheet1.getRootTopic()
-				level1_topic.setTitle(topic)
+				title = line.replace('# ', '')
+				root_topic = get_super_topic(1, root_topic, level2_topic, level3_topic, level4_topic)
+				root_topic.setTitle(title)
 			elif line.startswith('## '):
-				level = 2
-				topic = line.replace('## ', '')
-				level2_topic = level1_topic.addSubTopic()
-				level2_topic.setTitle(topic)
+				title = line.replace('## ', '')
+				root_topic = get_super_topic(2, root_topic, level2_topic, level3_topic, level4_topic)
+				level2_topic = root_topic.addSubTopic()
+				level2_topic.setTitle(title)
 			elif line.startswith('### '):
-				level = 3
-				topic = line.replace('### ', '')
+				title = line.replace('### ', '')
+				level2_topic = get_super_topic(3, root_topic, level2_topic, level3_topic, level4_topic)
 				level3_topic = level2_topic.addSubTopic()
-				level3_topic.setTitle(topic)
+				level3_topic.setTitle(title)
 			elif line.startswith('#### '):
-				level = 4
-				topic = line.replace('#### ', '')
+				title = line.replace('#### ', '')
+				level3_topic = get_super_topic(4, root_topic, level2_topic, level3_topic, level4_topic)
 				level4_topic = level3_topic.addSubTopic()
-				level4_topic.setTitle(topic)
+				level4_topic.setTitle(title)
 			elif line.startswith('##### '):
-				level = 5
-				topic = line.replace('###### ', '')
+				title = line.replace('###### ', '')
+				level4_topic = get_super_topic(5, root_topic, level2_topic, level3_topic, level4_topic)
 				level5_topic = level4_topic.addSubTopic()
-				level5_topic.setTitle(topic)
+				level5_topic.setTitle(title)
 			else:
 				print('暂不支持更多层级展示')
 
@@ -85,6 +97,47 @@ def handle_file(md_file, sheet1):
 
 		i += 1
 		line = f.readline()
+
+
+def get_super_topic(level, root_topic, level2_topic, level3_topic, level4_topic):
+	if level == 5:
+		if level4_topic is None:
+			level4_topic = get_super_topic(4, root_topic, level2_topic, level3_topic, level4_topic)
+		return level4_topic
+
+	elif level == 4:
+		if level3_topic is None:
+			level3_topic = get_super_topic(3, root_topic, level2_topic, level3_topic, level4_topic)
+		return level3_topic
+
+	elif level == 3:
+		if level2_topic is None:
+			level2_topic = get_super_topic(2, root_topic, level2_topic, level3_topic, level4_topic)
+		return level2_topic
+
+	elif level == 2:
+		if root_topic is None:
+			root_topic = get_super_topic(1, root_topic, level2_topic, level3_topic, level4_topic)
+		return root_topic
+
+	elif level == 1:
+		return root_topic
+
+	else:
+		print(level)
+
+
+def get_file_name(path):
+	[dirname, filename] = os.path.split(path)
+	arr = filename.split('.')
+	i = 0
+	topic_name = ''
+	for item in arr:
+		if i < len(arr) - 1:
+			topic_name += item
+		i += 1
+
+	return topic_name
 
 
 if __name__ == '__main__':
