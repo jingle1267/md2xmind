@@ -13,7 +13,7 @@ import xmind
 
 class Md2Xmind:
 
-	def main(md_file, target_file_name):
+	def main(md_file, target_file_name, topic_name):
 		# print('main {0}'.format(md_file))
 
 		if '.xmind' not in target_file_name:
@@ -33,17 +33,18 @@ class Md2Xmind:
 		sheet1 = workbook.getPrimarySheet()
 
 		# 3、在画布上生成思维导图
-		Md2Xmind.handle_file(md_file, sheet1)
+		Md2Xmind.handle_file(md_file, sheet1, topic_name)
 
 		# 4、保存（如果指定path参数，另存为该文件名）
 		xmind.save(workbook)
 
-		print('Done')
+		print('{0} created'.format(target_file_name))
 
-	def handle_file(md_file, sheet1):
+	def handle_file(md_file, sheet1, topic_name):
 		f = open(md_file, 'r')
 
-		topic_name = Md2Xmind.get_file_name(md_file)
+		if topic_name == '':
+			topic_name = Md2Xmind.get_file_name(md_file)
 		# print(md_file)
 
 		global root_topic
@@ -86,7 +87,7 @@ class Md2Xmind:
 					level4_topic = level3_topic.addSubTopic()
 					level4_topic.setTitle(title)
 				elif line.startswith('##### '):
-					title = line.replace('###### ', '')
+					title = line.replace('##### ', '')
 					level4_topic = Md2Xmind.get_super_topic(5, root_topic, level2_topic, level3_topic, level4_topic)
 					level5_topic = level4_topic.addSubTopic()
 					level5_topic.setTitle(title)
@@ -141,7 +142,11 @@ class Md2Xmind:
 
 
 def process(md_file, target_file_name):
-	Md2Xmind.main(md_file, target_file_name)
+	process(md_file, target_file_name, '')
+
+
+def process(md_file, target_file_name, topic_name):
+	Md2Xmind.main(md_file, target_file_name, topic_name)
 
 
 if __name__ == '__main__':

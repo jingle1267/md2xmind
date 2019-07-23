@@ -9,5 +9,8 @@ from md2xmind.Md2Xmind import process
 
 
 def start_trans(md_file, target_file_name):
-	return process(md_file, target_file_name)
+	return start_trans(md_file, target_file_name, '')
 
+
+def start_trans(md_file, target_file_name, topic_name):
+	return process(md_file, target_file_name, topic_name)
