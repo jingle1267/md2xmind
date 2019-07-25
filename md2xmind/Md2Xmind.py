@@ -13,7 +13,7 @@ import xmind
 
 class Md2Xmind:
 
-	def main(md_file, target_file_name, topic_name):
+	def main(md_content, target_file_name, topic_name):
 		# print('main {0}'.format(md_file))
 
 		if '.xmind' not in target_file_name:
@@ -23,7 +23,7 @@ class Md2Xmind:
 		target_file_path = os.path.abspath(os.path.join(os.getcwd(), target_file_name))
 		# print(target_file_path)
 		if os.path.exists(target_file_path):
-			print('目标文件存在且已删除')
+			print('\033[1;35m目标文件存在且已删除 \033[0m')
 			os.remove(target_file_path)
 
 		# 1、如果指定的XMind文件存在，则加载，否则创建一个新的
@@ -33,19 +33,15 @@ class Md2Xmind:
 		sheet1 = workbook.getPrimarySheet()
 
 		# 3、在画布上生成思维导图
-		Md2Xmind.handle_file(md_file, sheet1, topic_name)
+		Md2Xmind.handle_content(md_content, sheet1, topic_name)
 
 		# 4、保存（如果指定path参数，另存为该文件名）
 		xmind.save(workbook)
 
-		print('{0} created'.format(target_file_name))
+		print('\033[1;32m{0} created \033[0m'.format(target_file_name))
 
-	def handle_file(md_file, sheet1, topic_name):
-		f = open(md_file, 'r')
-
-		if topic_name == '':
-			topic_name = Md2Xmind.get_file_name(md_file)
-		# print(md_file)
+	def handle_content(md_content, sheet1, topic_name):
+		content_arr = md_content.split('\n')
 
 		global root_topic
 		global level2_topic
@@ -60,9 +56,8 @@ class Md2Xmind:
 		level4_topic = None
 		level5_topic = None
 
-		line = f.readline()
 		i = 1
-		while line:
+		for line in content_arr:
 			line = line.strip()
 			# print(line)
 
@@ -94,12 +89,10 @@ class Md2Xmind:
 				else:
 					print('暂不支持更多层级展示')
 
-			# print('level {0} topic {1}'.format(level, topic))
 			else:
 				print('第 {0} 行不是#开始，内容{1}'.format(i, line))
 
 			i += 1
-			line = f.readline()
 
 	def get_super_topic(level, root_topic, level2_topic, level3_topic, level4_topic):
 		if level == 5:
@@ -141,19 +134,36 @@ class Md2Xmind:
 		return topic_name
 
 
-def process(md_file, target_file_name):
-	process(md_file, target_file_name, '')
+def process_file(md_file, target_file_name):
+	process_file(md_file, target_file_name, '')
 
 
-def process(md_file, target_file_name, topic_name):
-	Md2Xmind.main(md_file, target_file_name, topic_name)
+def process_file(md_file, target_file_name, topic_name):
+	if not os.path.exists(md_file):
+		print('\033[1;31m文件不存在： {0} \033[0m'.format(md_file))
+		return
+
+	with open(md_file) as f:
+		md_content = f.read()
+
+		if topic_name == '':
+			topic_name = Md2Xmind.get_file_name(md_file)
+		process_content(md_content, target_file_name, topic_name)
+
+
+def process_content(md_content, target_file_name, topic_name):
+	if md_content.strip() == '' or len(md_content.strip()) == 0:
+		print('\033[1;31mMarkdown 的内容太少 \033[0m')
+		return
+	Md2Xmind.main(md_content, target_file_name, topic_name)
 
 
 if __name__ == '__main__':
-	print('命令行开始执行')
-	if len(sys.argv) >= 2:
-		md_file = sys.argv[1]
-		target_file_name = sys.argv[2]
-		process(md_file, target_file_name)
-	else:
-		print('Missing parameters！Need source_file and target_file_name.')
+	file_path = os.path.abspath(os.path.join(os.getcwd(), '../example/test22.md'))
+	process_file(file_path, 'test2', 'test22')
+
+	# with open(file_path) as f:
+	# 	md_content = f.read()
+	# process_content(md_content, '111', '111topic')
+	process_content('   ', '111', '111topic')
+	process_content('a', '111', '111topic')

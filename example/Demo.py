@@ -14,7 +14,11 @@ def main():
 	# print('example main')
 	file_path = os.path.abspath(os.path.join(os.getcwd(), 'test2.md'))
 
-	md2xmind.start_trans(file_path, 'test2', 'test22')
+	md2xmind.start_trans_file(file_path, 'test2', 'test22')
+
+	with open(file_path) as f:
+		md_content = f.read()
+		md2xmind.start_trans_content(md_content, '222', '222')
 
 
 if __name__ == '__main__':
