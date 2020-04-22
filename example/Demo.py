@@ -16,7 +16,7 @@ def main():
 
 	md2xmind.start_trans_file(file_path, 'test2', 'test22')
 
-	with open(file_path) as f:
+	with open(file_path, 'r', encoding='utf-8') as f:
 		md_content = f.read()
 		md2xmind.start_trans_content(md_content, '222', '222')
 

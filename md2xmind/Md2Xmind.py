@@ -154,7 +154,7 @@ def process_file(md_file, target_file_name, topic_name):
 		print('\033[1;31m文件不存在： {0} \033[0m'.format(md_file))
 		return
 
-	with open(md_file) as f:
+	with open(md_file, 'r', encoding='utf-8') as f:
 		md_content = f.read()
 
 		if topic_name == '':
