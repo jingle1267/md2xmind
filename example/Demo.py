@@ -14,7 +14,7 @@ def main():
 	# print('example main')
 	file_path = os.path.abspath(os.path.join(os.getcwd(), 'test2.md'))
 
-	md2xmind.start_trans_file(file_path, 'test2', 'test22')
+	md2xmind.start_trans_file(file_path, 'test3', 'test3')
 
 	with open(file_path, 'r', encoding='utf-8') as f:
 		md_content = f.read()

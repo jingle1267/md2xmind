@@ -66,7 +66,7 @@ class Md2Xmind:
 			# zipf.write('manifest.xml', 'manifest.xml')
 
 		# 删除临时的 manifest.json 文件
-		os.remove('manifest.json')
+		os.remove('manifest.xml')
 #
 # 		# 创建 manifest.xml 文件
 # 		with open('manifest.json', 'w', encoding='utf-8') as f:
