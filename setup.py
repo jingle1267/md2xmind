@@ -23,7 +23,7 @@ URL = 'https://github.com/jingle1267/md2xmind'
 EMAIL = 'jingle1267@163.com'
 AUTHOR = 'jingle1267'
 REQUIRES_PYTHON = '>=3.6.0'
-VERSION = '1.2.1'
+VERSION = '1.2.2'
 
 # What packages are required for this module to be executed?
 REQUIRED = [

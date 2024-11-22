@@ -7,8 +7,11 @@
 """
 import os
 import sys
+import zipfile
+from datetime import datetime
 
 import xmind
+from xmind.core.const import ATTR_AUTHOR
 
 
 class Md2Xmind:
@@ -29,8 +32,19 @@ class Md2Xmind:
 		# 1、如果指定的XMind文件存在，则加载，否则创建一个新的
 		workbook = xmind.load(target_file_name)
 
+		# workbook.setVersion('1.0.1')
+
 		# 2、获取第一个画布（Sheet），默认新建一个XMind文件时，自动创建一个空白的画布
 		sheet1 = workbook.getPrimarySheet()
+
+		# 设置作者
+		# sheet1.setAttribute(ATTR_AUTHOR, "md2xmind")
+
+		# 设置创建时间
+		# sheet1.setAttribute('created', datetime.now().isoformat())
+
+		# 设置修改时间
+		# sheet1.setAttribute('modified', datetime.now().isoformat())
 
 		# 3、在画布上生成思维导图
 		Md2Xmind.handle_content(md_content, sheet1, topic_name)
@@ -38,7 +52,36 @@ class Md2Xmind:
 		# 4、保存（如果指定path参数，另存为该文件名）
 		xmind.save(workbook)
 
+		# 创建 manifest.xml 文件
+		with open('manifest.xml', 'w', encoding='utf-8') as f:
+			f.write('''<?xml version="1.0" encoding="UTF-8"?>
+<manifest xmlns="http://www.xmind.net/manifest/2008">
+	<file-entry full-path="content.xml" media-type="application/vnd.xmind.workbook+xml"/>
+	<file-entry full-path="Thumbnails/thumbnail.png" media-type="image/png"/>
+</manifest>''')
+
+		# 手动添加 manifest.xml 文件
+		with zipfile.ZipFile(target_file_name, 'a') as zipf:
+			zipf.write('manifest.xml', 'META-INF/manifest.xml')
+			# zipf.write('manifest.xml', 'manifest.xml')
+
+		# 删除临时的 manifest.json 文件
+		os.remove('manifest.json')
+#
+# 		# 创建 manifest.xml 文件
+# 		with open('manifest.json', 'w', encoding='utf-8') as f:
+# 			f.write('''{"file-entries":{"content.json":{},"metadata.json":{},"Thumbnails/thumbnail.png":{}}}''')
+#
+# 		# 手动添加 manifest.xml 文件
+# 		with zipfile.ZipFile(target_file_name, 'a') as zipf:
+# 			zipf.write('manifest.json', 'manifest.json')
+# 			# zipf.write('content.xml', 'content.xml')
+# 			zipf.write('metadata.json', 'metadata.json')
+# 			# zipf.write('manifest.xml', 'META-INF/manifest.xml')
+# 			zipf.write('thumbnail.png', 'Thumbnails/thumbnail.png')
+
 		print('\033[1;32m{0} created \033[0m'.format(target_file_name))
+
 
 	def handle_content(md_content, sheet1, topic_name):
 		content_arr = md_content.split('\n')
@@ -203,8 +246,9 @@ def process_content(md_content, target_file_name, topic_name):
 
 
 if __name__ == '__main__':
-	file_path = os.path.abspath(os.path.join(os.getcwd(), '../example/test1.md'))
-	process_file(file_path, 'test1', 'test22')
+	file_path = os.path.abspath(os.path.join(os.getcwd(), '../example/把马儿养肥.md'))
+	# file_path = os.path.abspath(os.path.join(os.getcwd(), '../example/test1.md'))
+	process_file(file_path, '如何把马儿养肥9', '')
 
 	# with open(file_path) as f:
 	# 	md_content = f.read()
